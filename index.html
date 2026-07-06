@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sentence Activity Generator</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="site-header">
+      <div>
+        <p class="eyebrow">Language classroom tool</p>
+        <h1>Sentence Activity Generator</h1>
+      </div>
+      <p class="header-note">Enter target-language sentences, add optional English support, then choose an activity.</p>
+    </header>
+
+    <main>
+      <section id="landingPage" class="landing-grid" aria-label="Landing page">
+        <div class="card input-card">
+          <div class="card-header">
+            <p class="eyebrow">Your sentences</p>
+            <span class="pill">1 sentence per line</span>
+          </div>
+
+          <label for="targetInput" class="field-label">Target-language sentences</label>
+          <textarea id="targetInput" class="main-textarea" spellcheck="false" placeholder="Ich bin in die Stadt gegangen&#10;Ich habe einen Film gesehen&#10;Es war lustig"></textarea>
+
+          <label for="englishInput" class="field-label translation-label">English translations, in the same order</label>
+          <textarea id="englishInput" class="translation-textarea" spellcheck="false" placeholder="I went into town.&#10;I watched a film.&#10;It was funny."></textarea>
+
+          <div class="button-row">
+            <button id="exampleButton" class="secondary-button" type="button">Examples</button>
+            <button id="clearButton" class="secondary-button" type="button">Clear Text</button>
+          </div>
+        </div>
+
+        <aside class="card activity-card">
+          <p class="eyebrow">Activities</p>
+          <div class="activity-buttons">
+            <button class="activity-button" data-activity="jumble" type="button">
+              <span>Jumble Words</span>
+              <small>sentence structure</small>
+            </button>
+            <button class="activity-button" data-activity="initials" type="button">
+              <span>Initial Letters</span>
+              <small>first-letter support</small>
+            </button>
+          </div>
+          <div class="activity-help" id="activityHelp">
+            Hover over an activity for more information.
+          </div>
+        </aside>
+      </section>
+
+      <section id="activityPage" class="activity-page hidden" aria-label="Activity page">
+        <div class="activity-topbar">
+          <button id="backTopButton" class="ghost-button" type="button">← Back</button>
+          <select id="activitySwitcher" class="activity-switcher" aria-label="Choose activity">
+            <option value="jumble">Jumble Words</option>
+            <option value="initials">Initial Letters</option>
+          </select>
+        </div>
+
+        <div class="activity-heading">
+          <p id="activityCategory" class="eyebrow">Sentence structure awareness</p>
+          <h2 id="activityTitle">Jumble Words</h2>
+          <p id="activitySummary" class="activity-summary"></p>
+          <p id="studentInstruction" class="student-instruction"></p>
+        </div>
+
+        <div class="puzzle-panel">
+          <p class="eyebrow centre">Puzzles – click each sentence for the answer</p>
+          <div id="puzzleList" class="puzzle-list"></div>
+        </div>
+
+        <div class="control-bar">
+          <button id="xlButton" class="control-button small-control" type="button">XL</button>
+          <button id="showAllButton" class="control-button" type="button">Show All Answers</button>
+          <button id="showEnglishButton" class="control-button" type="button">Show English</button>
+          <button id="copyButton" class="control-button" type="button">Copy</button>
+          <button id="backButton" class="control-button" type="button">Back</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

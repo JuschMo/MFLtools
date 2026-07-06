@@ -1,0 +1,457 @@
+:root {
+  --ink: #0f234a;
+  --ink-soft: #294778;
+  --primary: #1f5fa8;
+  --primary-dark: #153f73;
+  --primary-light: #d9eaff;
+  --primary-pale: #eef6ff;
+  --panel: #ffffff;
+  --panel-soft: #f8fbff;
+  --border: #c9dfff;
+  --shadow: 0 16px 35px rgba(15, 35, 74, 0.12);
+  --radius-large: 20px;
+  --radius-medium: 14px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: Inter, "Segoe UI", Arial, sans-serif;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at top left, rgba(217, 234, 255, 0.95), transparent 34rem),
+    linear-gradient(135deg, #f7fbff 0%, #eef6ff 50%, #f9fcff 100%);
+}
+
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.page-shell {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 32px 0;
+}
+
+.site-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  align-items: flex-end;
+  margin-bottom: 24px;
+}
+
+.site-header h1,
+.activity-heading h2 {
+  margin: 4px 0 0;
+  line-height: 1;
+  color: var(--ink);
+}
+
+.site-header h1 {
+  font-size: clamp(2rem, 4vw, 3.4rem);
+  letter-spacing: -0.04em;
+}
+
+.header-note {
+  max-width: 410px;
+  margin: 0;
+  color: var(--ink-soft);
+  font-weight: 650;
+  line-height: 1.4;
+}
+
+.eyebrow {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.78rem;
+  color: var(--primary);
+  font-weight: 900;
+}
+
+.centre {
+  text-align: center;
+}
+
+.landing-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
+  gap: 28px;
+  align-items: start;
+}
+
+.card,
+.puzzle-panel {
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-large);
+  box-shadow: var(--shadow);
+}
+
+.card {
+  padding: 28px;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7px 11px;
+  border-radius: 999px;
+  background: var(--primary-pale);
+  border: 1px solid var(--border);
+  color: var(--primary-dark);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.field-label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--ink-soft);
+  font-size: 0.92rem;
+  font-weight: 850;
+}
+
+.translation-label {
+  margin-top: 18px;
+}
+
+.main-textarea,
+.translation-textarea {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-medium);
+  padding: 18px;
+  resize: vertical;
+  color: var(--ink);
+  background: var(--panel-soft);
+  outline: none;
+  line-height: 1.5;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+}
+
+.main-textarea:focus,
+.translation-textarea:focus,
+.activity-switcher:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(31, 95, 168, 0.14);
+}
+
+.main-textarea {
+  min-height: 250px;
+  font-size: 1.15rem;
+}
+
+.translation-textarea {
+  min-height: 150px;
+  font-size: 1rem;
+}
+
+.button-row,
+.activity-buttons,
+.control-bar {
+  display: grid;
+  gap: 12px;
+}
+
+.button-row {
+  grid-template-columns: 1fr 1fr;
+  margin-top: 18px;
+}
+
+.secondary-button,
+.activity-button,
+.control-button,
+.ghost-button {
+  border: 0;
+  border-radius: 12px;
+  font-weight: 900;
+  transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
+}
+
+.secondary-button,
+.activity-button,
+.control-button {
+  background: linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: #fff;
+  box-shadow: 0 8px 18px rgba(21, 63, 115, 0.22);
+}
+
+.secondary-button,
+.control-button {
+  min-height: 48px;
+}
+
+.secondary-button:hover,
+.activity-button:hover,
+.control-button:hover,
+.ghost-button:hover {
+  transform: translateY(-1px);
+}
+
+.secondary-button:active,
+.activity-button:active,
+.control-button:active,
+.ghost-button:active {
+  transform: translateY(1px);
+}
+
+.activity-card {
+  min-height: 430px;
+}
+
+.activity-buttons {
+  grid-template-columns: 1fr;
+  margin-top: 18px;
+}
+
+.activity-button {
+  min-height: 82px;
+  padding: 14px 18px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+}
+
+.activity-button span {
+  font-size: 1.1rem;
+}
+
+.activity-button small {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  opacity: 0.8;
+  font-size: 0.68rem;
+}
+
+.activity-help {
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+  color: var(--ink-soft);
+  line-height: 1.5;
+  font-weight: 650;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.activity-page {
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+.activity-topbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.ghost-button,
+.activity-switcher {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  color: var(--primary-dark);
+  border-radius: 999px;
+  min-height: 42px;
+  padding: 0 18px;
+  font-weight: 900;
+}
+
+.activity-switcher {
+  outline: none;
+}
+
+.activity-heading {
+  text-align: center;
+  margin: 0 auto 24px;
+}
+
+.activity-heading h2 {
+  margin-top: 8px;
+  font-size: clamp(2.4rem, 6vw, 4.8rem);
+}
+
+.activity-summary {
+  max-width: 820px;
+  margin: 14px auto 0;
+  color: var(--ink-soft);
+  line-height: 1.5;
+  font-weight: 700;
+}
+
+.student-instruction {
+  max-width: 930px;
+  margin: 20px auto 0;
+  font-size: clamp(1.25rem, 2.3vw, 2rem);
+  line-height: 1.25;
+  font-weight: 950;
+  color: var(--ink);
+}
+
+.puzzle-panel {
+  padding: 28px;
+}
+
+.puzzle-list {
+  margin-top: 20px;
+  display: grid;
+  gap: 12px;
+}
+
+.puzzle-card {
+  border: 2px solid var(--border);
+  border-radius: 16px;
+  padding: 24px 22px;
+  background: #ffffff;
+  color: var(--ink);
+  font-size: clamp(2rem, 5vw, 4.2rem);
+  line-height: 1.18;
+  font-weight: 850;
+  letter-spacing: -0.03em;
+  display: grid;
+  gap: 14px;
+  min-height: 104px;
+  user-select: none;
+  transition: background 160ms ease, border-color 160ms ease, transform 160ms ease;
+}
+
+.puzzle-card:hover {
+  background: var(--primary-pale);
+  border-color: var(--primary);
+}
+
+.puzzle-card.revealed {
+  background: linear-gradient(180deg, #f8fbff 0%, #ffffff 100%);
+  border-color: var(--primary);
+}
+
+.puzzle-card .number {
+  color: var(--primary-dark);
+  margin-right: 10px;
+}
+
+.answer-label,
+.translation-box {
+  font-size: 1rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--primary);
+  font-weight: 950;
+}
+
+.translation-box {
+  display: none;
+  background: var(--primary-pale);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  line-height: 1.4;
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--primary-dark);
+  font-size: 1.05rem;
+}
+
+.translation-box.visible {
+  display: block;
+}
+
+.translation-box strong {
+  display: block;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  color: var(--primary);
+  margin-bottom: 4px;
+  font-size: 0.75rem;
+}
+
+.control-bar {
+  grid-template-columns: 72px 1fr 1fr 1fr 1fr;
+  margin-top: 16px;
+  padding: 14px 10px;
+  background: rgba(255, 255, 255, 0.78);
+  border-top: 1px solid var(--border);
+  position: sticky;
+  bottom: 0;
+  backdrop-filter: blur(10px);
+}
+
+.small-control {
+  min-width: 62px;
+}
+
+body.xl-mode .puzzle-card {
+  font-size: clamp(3rem, 7vw, 6.5rem);
+  min-height: 138px;
+}
+
+body.xl-mode .translation-box {
+  font-size: 1.35rem;
+}
+
+@media (max-width: 860px) {
+  .site-header,
+  .activity-topbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .landing-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .activity-card {
+    min-height: auto;
+  }
+
+  .control-bar {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .small-control {
+    grid-column: span 2;
+  }
+}
+
+@media print {
+  body {
+    background: #ffffff;
+  }
+
+  .site-header,
+  .activity-topbar,
+  .control-bar {
+    display: none;
+  }
+
+  .puzzle-panel,
+  .card {
+    box-shadow: none;
+  }
+}
