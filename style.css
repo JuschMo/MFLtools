@@ -579,3 +579,155 @@ body.text-size-xl .translation-box {
     grid-column: span 1;
   }
 }
+
+/* Version 3: sentence view controls, timers and colour themes */
+.theme-bar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+  color: var(--ink-soft);
+  font-weight: 850;
+}
+
+.theme-select {
+  min-height: 38px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0 16px;
+  background: #ffffff;
+  color: var(--primary-dark);
+  font-weight: 900;
+  outline: none;
+}
+
+.timer-display {
+  min-height: 48px;
+  border-radius: 12px;
+  border: 2px solid var(--border);
+  background: var(--primary-pale);
+  color: var(--primary-dark);
+  font-size: 1.35rem;
+  font-weight: 950;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 14px;
+}
+
+.control-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.control-button:disabled:hover {
+  transform: none;
+}
+
+.control-bar {
+  grid-template-columns: 72px minmax(130px, 1.15fr) 64px 64px minmax(110px, 0.9fr) minmax(110px, 0.9fr) minmax(95px, 0.75fr) 92px minmax(150px, 1.2fr) minmax(128px, 1fr) minmax(90px, 0.7fr) minmax(90px, 0.7fr);
+  align-items: stretch;
+}
+
+/* Five cheerful, gentle themes */
+body.theme-ocean {
+  --ink: #0f234a;
+  --ink-soft: #294778;
+  --primary: #1f5fa8;
+  --primary-dark: #153f73;
+  --primary-light: #d9eaff;
+  --primary-pale: #eef6ff;
+  --panel: #ffffff;
+  --panel-soft: #f8fbff;
+  --border: #c9dfff;
+  --shadow: 0 16px 35px rgba(15, 35, 74, 0.12);
+  background:
+    radial-gradient(circle at top left, rgba(217, 234, 255, 0.95), transparent 34rem),
+    linear-gradient(135deg, #f7fbff 0%, #eef6ff 50%, #f9fcff 100%);
+}
+
+body.theme-sky {
+  --ink: #17304b;
+  --ink-soft: #41627d;
+  --primary: #3182a8;
+  --primary-dark: #1f5a78;
+  --primary-light: #d9f2fb;
+  --primary-pale: #effbff;
+  --panel: #ffffff;
+  --panel-soft: #f7fdff;
+  --border: #bfe7f4;
+  --shadow: 0 16px 35px rgba(31, 90, 120, 0.13);
+  background:
+    radial-gradient(circle at top left, rgba(214, 243, 251, 0.95), transparent 34rem),
+    linear-gradient(135deg, #f8fdff 0%, #ecf8fc 55%, #ffffff 100%);
+}
+
+body.theme-berry {
+  --ink: #341a45;
+  --ink-soft: #654477;
+  --primary: #8a4ea3;
+  --primary-dark: #613573;
+  --primary-light: #f0ddfa;
+  --primary-pale: #fbf4ff;
+  --panel: #ffffff;
+  --panel-soft: #fdf9ff;
+  --border: #e3c7f2;
+  --shadow: 0 16px 35px rgba(97, 53, 115, 0.13);
+  background:
+    radial-gradient(circle at top left, rgba(240, 221, 250, 0.95), transparent 34rem),
+    linear-gradient(135deg, #fdf9ff 0%, #f7effc 55%, #ffffff 100%);
+}
+
+body.theme-forest {
+  --ink: #183527;
+  --ink-soft: #446554;
+  --primary: #3f8060;
+  --primary-dark: #285640;
+  --primary-light: #dcf2e7;
+  --primary-pale: #f1fbf6;
+  --panel: #ffffff;
+  --panel-soft: #f8fffb;
+  --border: #c7e8d5;
+  --shadow: 0 16px 35px rgba(40, 86, 64, 0.13);
+  background:
+    radial-gradient(circle at top left, rgba(220, 242, 231, 0.95), transparent 34rem),
+    linear-gradient(135deg, #fbfffd 0%, #effaf4 55%, #ffffff 100%);
+}
+
+body.theme-sunset {
+  --ink: #44251c;
+  --ink-soft: #765044;
+  --primary: #c26a45;
+  --primary-dark: #8b452c;
+  --primary-light: #ffe1d2;
+  --primary-pale: #fff7f2;
+  --panel: #ffffff;
+  --panel-soft: #fffbf8;
+  --border: #f1c9b8;
+  --shadow: 0 16px 35px rgba(139, 69, 44, 0.13);
+  background:
+    radial-gradient(circle at top left, rgba(255, 225, 210, 0.95), transparent 34rem),
+    linear-gradient(135deg, #fffdfb 0%, #fff3ed 55%, #ffffff 100%);
+}
+
+@media (max-width: 1180px) {
+  .control-bar {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 700px) {
+  .theme-bar {
+    justify-content: stretch;
+  }
+
+  .theme-select {
+    flex: 1;
+  }
+
+  .control-bar {
+    grid-template-columns: 1fr 1fr;
+  }
+}

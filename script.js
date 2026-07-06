@@ -96,9 +96,13 @@ const state = {
   showEnglish: false,
   allRevealed: false,
   textSize: "l",
+  viewMode: "all",
+  currentIndex: 0,
   option: "",
+  timeOption: "5",
   playing: false,
   playTimer: null,
+  countdownTimer: null,
 };
 
 const landingPage = document.querySelector("#landingPage");
@@ -115,8 +119,14 @@ const showAllButton = document.querySelector("#showAllButton");
 const showEnglishButton = document.querySelector("#showEnglishButton");
 const copyButton = document.querySelector("#copyButton");
 const textSizeSelect = document.querySelector("#textSizeSelect");
+const viewModeSelect = document.querySelector("#viewModeSelect");
+const prevSentenceButton = document.querySelector("#prevSentenceButton");
+const nextSentenceButton = document.querySelector("#nextSentenceButton");
 const activityOptionSelect = document.querySelector("#activityOptionSelect");
+const timeOptionSelect = document.querySelector("#timeOptionSelect");
 const startButton = document.querySelector("#startButton");
+const timerDisplay = document.querySelector("#timerDisplay");
+const themeSelect = document.querySelector("#themeSelect");
 
 function buildActivityControls() {
   activityOrder.forEach((key) => {
@@ -171,6 +181,7 @@ function showActivity(activityName) {
   state.translations = translations;
   state.showEnglish = false;
   state.allRevealed = false;
+  state.currentIndex = Math.min(state.currentIndex, Math.max(0, sentences.length - 1));
   setDefaultOptionForActivity(activityName);
 
   landingPage.classList.add("hidden");
@@ -189,7 +200,12 @@ function setDefaultOptionForActivity(activityName) {
     alternate: "odd",
     moving: "2",
   };
+  const timeDefaults = {
+    delayed: "5",
+    disappearing: "5",
+  };
   state.option = defaults[activityName] || "";
+  state.timeOption = timeDefaults[activityName] || "5";
 }
 
 function renderActivity() {
@@ -200,24 +216,27 @@ function renderActivity() {
   showEnglishButton.textContent = state.showEnglish ? "Hide English" : "Show English";
   showAllButton.textContent = state.allRevealed ? "Hide All Answers" : "Show All Answers";
   setupActivityOption();
+  setupSentenceViewControls();
 
   puzzleList.innerHTML = "";
   puzzleList.classList.toggle("reader-mode", isPlaybackActivity());
 
-  state.sentences.forEach((sentence, index) => {
+  getVisibleIndexes().forEach((sentenceIndex) => {
+    const sentence = state.sentences[sentenceIndex];
     const card = document.createElement("button");
     card.type = "button";
     card.className = "puzzle-card";
     card.dataset.answer = sentence;
-    card.dataset.puzzle = createPuzzle(sentence, state.activity, index);
+    card.dataset.index = String(sentenceIndex);
+    card.dataset.puzzle = createPuzzle(sentence, state.activity, sentenceIndex);
 
     const puzzleText = document.createElement("div");
     puzzleText.className = "puzzle-text";
 
     const translation = document.createElement("div");
     translation.className = "translation-box";
-    if (state.showEnglish && state.translations[index]) translation.classList.add("visible");
-    translation.innerHTML = escapeHtml(state.translations[index] || "No English translation entered.");
+    if (state.showEnglish && state.translations[sentenceIndex]) translation.classList.add("visible");
+    translation.innerHTML = escapeHtml(state.translations[sentenceIndex] || "No English translation entered.");
 
     card.appendChild(puzzleText);
     card.appendChild(translation);
@@ -225,45 +244,84 @@ function renderActivity() {
     card.addEventListener("click", () => {
       card.classList.toggle("revealed");
       updateShowAllStateFromCards();
-      updateCardText(card, index);
+      updateCardText(card, sentenceIndex);
     });
 
     puzzleList.appendChild(card);
-    updateCardText(card, index);
+    updateCardText(card, sentenceIndex);
   });
+}
+
+function getVisibleIndexes() {
+  if (state.viewMode === "one") return [state.currentIndex];
+  return state.sentences.map((_, index) => index);
+}
+
+function setupSentenceViewControls() {
+  viewModeSelect.value = state.viewMode;
+  const oneAtATime = state.viewMode === "one";
+  prevSentenceButton.classList.toggle("hidden-control", !oneAtATime);
+  nextSentenceButton.classList.toggle("hidden-control", !oneAtATime);
+  prevSentenceButton.disabled = state.currentIndex <= 0;
+  nextSentenceButton.disabled = state.currentIndex >= state.sentences.length - 1;
+  prevSentenceButton.textContent = state.currentIndex <= 0 ? "←" : `${state.currentIndex} ←`;
+  nextSentenceButton.textContent = state.currentIndex >= state.sentences.length - 1 ? "→" : `→ ${state.currentIndex + 2}`;
 }
 
 function setupActivityOption() {
   activityOptionSelect.innerHTML = "";
+  timeOptionSelect.innerHTML = "";
   activityOptionSelect.classList.add("hidden-control");
+  timeOptionSelect.classList.add("hidden-control");
   startButton.classList.add("hidden-control");
+  timerDisplay.classList.add("hidden-control");
+  timerDisplay.textContent = "";
   startButton.textContent = "Start";
 
   const options = {
     speed: { label: "Speed", values: [["50", "50 wpm"], ["80", "80 wpm"], ["120", "120 wpm"], ["160", "160 wpm"], ["200", "200 wpm"], ["250", "250 wpm"], ["300", "300 wpm"]] },
-    delayed: { label: "Time", values: [["3", "3 sec"], ["5", "5 sec"], ["8", "8 sec"], ["10", "10 sec"]] },
-    disappearing: { label: "Hide", values: [["1", "1 word"], ["2", "2 words"], ["3", "3 words"], ["4", "4 words"]] },
-    missing: { label: "Missing", values: [["1", "1 word"], ["2", "2 words"], ["3", "3 words"], ["4", "4 words"]] },
+    disappearing: { label: "Hide", values: [["1", "1 word"], ["2", "2 words"], ["3", "3 words"], ["4", "4 words"], ["5", "5 words"]] },
+    missing: { label: "Missing", values: [["1", "1 word"], ["2", "2 words"], ["3", "3 words"], ["4", "4 words"], ["5", "5 words"]] },
     alternate: { label: "Pattern", values: [["odd", "Odd words"], ["even", "Even words"], ["alt", "Alternating"]] },
     moving: { label: "Chunk", values: [["1", "1 word"], ["2", "2 words"], ["3", "3 words"]] },
   };
 
-  const config = options[state.activity];
-  if (!config) return;
+  const timeOptions = {
+    delayed: { label: "Time", values: [["3", "3 sec"], ["5", "5 sec"], ["8", "8 sec"], ["10", "10 sec"], ["15", "15 sec"], ["20", "20 sec"]] },
+    disappearing: { label: "Time", values: [["3", "3 sec"], ["5", "5 sec"], ["8", "8 sec"], ["10", "10 sec"], ["15", "15 sec"], ["20", "20 sec"]] },
+  };
 
-  config.values.forEach(([value, label]) => {
-    const option = document.createElement("option");
-    option.value = value;
-    option.textContent = label;
-    activityOptionSelect.appendChild(option);
-  });
-  activityOptionSelect.value = state.option;
-  activityOptionSelect.title = config.label;
-  activityOptionSelect.classList.remove("hidden-control");
+  const config = options[state.activity];
+  if (config) {
+    config.values.forEach(([value, label]) => {
+      const option = document.createElement("option");
+      option.value = value;
+      option.textContent = label;
+      activityOptionSelect.appendChild(option);
+    });
+    activityOptionSelect.value = state.option;
+    activityOptionSelect.title = config.label;
+    activityOptionSelect.classList.remove("hidden-control");
+  }
+
+  const timeConfig = timeOptions[state.activity];
+  if (timeConfig) {
+    timeConfig.values.forEach(([value, label]) => {
+      const option = document.createElement("option");
+      option.value = value;
+      option.textContent = label;
+      timeOptionSelect.appendChild(option);
+    });
+    timeOptionSelect.value = state.timeOption;
+    timeOptionSelect.title = timeConfig.label;
+    timeOptionSelect.classList.remove("hidden-control");
+    timerDisplay.classList.remove("hidden-control");
+    timerDisplay.textContent = `${state.timeOption}s`;
+  }
 
   if (isPlaybackActivity() || state.activity === "disappearing") {
     startButton.classList.remove("hidden-control");
-    startButton.textContent = state.activity === "disappearing" ? "Hide Words" : "Start";
+    startButton.textContent = state.activity === "disappearing" ? "Start" : "Start";
   }
 }
 
@@ -335,11 +393,12 @@ function alternateWords(sentence, pattern, sentenceIndex) {
   }).join(" ");
 }
 
-function hideWordsInExistingCards() {
-  document.querySelectorAll(".puzzle-card").forEach((card, index) => {
+function hideWordsInVisibleCards() {
+  document.querySelectorAll(".puzzle-card").forEach((card) => {
+    const sentenceIndex = Number(card.dataset.index);
     card.classList.remove("revealed");
-    card.dataset.puzzle = missingWords(state.sentences[index], Number(state.option || 2));
-    updateCardText(card, index);
+    card.dataset.puzzle = missingWords(state.sentences[sentenceIndex], Number(state.option || 2));
+    updateCardText(card, sentenceIndex);
   });
   updateShowAllStateFromCards();
 }
@@ -380,9 +439,10 @@ function updateShowAllStateFromCards() {
 function setAllCardsRevealed(reveal) {
   stopPlayback();
   state.allRevealed = reveal;
-  document.querySelectorAll(".puzzle-card").forEach((card, index) => {
+  document.querySelectorAll(".puzzle-card").forEach((card) => {
+    const sentenceIndex = Number(card.dataset.index);
     card.classList.toggle("revealed", reveal);
-    updateCardText(card, index);
+    updateCardText(card, sentenceIndex);
   });
   showAllButton.textContent = reveal ? "Hide All Answers" : "Show All Answers";
 }
@@ -390,8 +450,10 @@ function setAllCardsRevealed(reveal) {
 function toggleEnglish() {
   state.showEnglish = !state.showEnglish;
   showEnglishButton.textContent = state.showEnglish ? "Hide English" : "Show English";
-  document.querySelectorAll(".translation-box").forEach((box, index) => {
-    box.classList.toggle("visible", state.showEnglish && Boolean(state.translations[index]));
+  document.querySelectorAll(".translation-box").forEach((box) => {
+    const card = box.closest(".puzzle-card");
+    const sentenceIndex = Number(card.dataset.index);
+    box.classList.toggle("visible", state.showEnglish && Boolean(state.translations[sentenceIndex]));
   });
 }
 
@@ -401,11 +463,12 @@ function copyCurrentActivity() {
   lines.push(details.title);
   lines.push(details.instruction);
   lines.push("");
-  state.sentences.forEach((sentence, index) => {
-    const card = document.querySelectorAll(".puzzle-card")[index];
-    const puzzle = card?.dataset.puzzle || createPuzzle(sentence, state.activity, index);
-    lines.push(`${index + 1}. ${puzzle}`);
-    if (state.showEnglish && state.translations[index]) lines.push(state.translations[index]);
+  getVisibleIndexes().forEach((sentenceIndex) => {
+    const sentence = state.sentences[sentenceIndex];
+    const card = [...document.querySelectorAll(".puzzle-card")].find((item) => Number(item.dataset.index) === sentenceIndex);
+    const puzzle = card?.dataset.puzzle || createPuzzle(sentence, state.activity, sentenceIndex);
+    lines.push(`${sentenceIndex + 1}. ${puzzle}`);
+    if (state.showEnglish && state.translations[sentenceIndex]) lines.push(state.translations[sentenceIndex]);
     if (card?.classList.contains("revealed")) lines.push(`Answer: ${sentence}`);
     lines.push("");
   });
@@ -417,9 +480,9 @@ function copyCurrentActivity() {
 }
 
 function startPlayback() {
-  stopPlayback();
+  stopPlayback(false);
   if (state.activity === "disappearing") {
-    hideWordsInExistingCards();
+    playDisappearingWords();
     return;
   }
   if (state.activity === "speed") playSpeedReader();
@@ -427,18 +490,57 @@ function startPlayback() {
   if (state.activity === "delayed") playDelayedTranslation();
 }
 
-function stopPlayback() {
+function stopPlayback(resetTimer = true) {
   state.playing = false;
   if (state.playTimer) clearTimeout(state.playTimer);
+  if (state.countdownTimer) clearInterval(state.countdownTimer);
   state.playTimer = null;
+  state.countdownTimer = null;
+  startButton.disabled = false;
+  if (resetTimer && (state.activity === "delayed" || state.activity === "disappearing")) {
+    timerDisplay.textContent = `${state.timeOption}s`;
+  }
+}
+
+function getVisibleCards() {
+  return [...document.querySelectorAll(".puzzle-card")];
+}
+
+function runCountdown(seconds, onFinish) {
+  let remaining = Number(seconds || 5);
+  state.playing = true;
+  startButton.disabled = true;
+  timerDisplay.classList.remove("hidden-control");
+  timerDisplay.textContent = `${remaining}s`;
+  state.countdownTimer = setInterval(() => {
+    remaining -= 1;
+    timerDisplay.textContent = remaining > 0 ? `${remaining}s` : "0s";
+    if (remaining <= 0) {
+      clearInterval(state.countdownTimer);
+      state.countdownTimer = null;
+      onFinish();
+      stopPlayback(false);
+      timerDisplay.textContent = "Done";
+    }
+  }, 1000);
+}
+
+function playDisappearingWords() {
+  getVisibleCards().forEach((card) => {
+    const sentenceIndex = Number(card.dataset.index);
+    card.classList.remove("revealed");
+    card.dataset.puzzle = state.sentences[sentenceIndex];
+    updateCardText(card, sentenceIndex);
+  });
+  runCountdown(Number(state.timeOption || 5), hideWordsInVisibleCards);
 }
 
 function playSpeedReader() {
-  const words = state.sentences.flatMap((sentence, sentenceIndex) => {
-    const sentenceWords = sentence.match(/\S+/g) || [];
+  const words = getVisibleIndexes().flatMap((sentenceIndex) => {
+    const sentenceWords = state.sentences[sentenceIndex].match(/\S+/g) || [];
     return sentenceWords.map((word) => ({ word, sentenceIndex }));
   });
-  const cards = [...document.querySelectorAll(".puzzle-card")];
+  const cards = getVisibleCards();
   cards.forEach((card) => card.classList.add("reader-card"));
   const delay = 60000 / Number(state.option || 120);
   let position = 0;
@@ -447,13 +549,13 @@ function playSpeedReader() {
   function step() {
     cards.forEach((card) => card.querySelector(".puzzle-text").innerHTML = "");
     if (position >= words.length) {
-      cards.forEach((card, index) => updateCardText(card, index));
+      cards.forEach((card) => updateCardText(card, Number(card.dataset.index)));
       stopPlayback();
       return;
     }
     const item = words[position];
-    const card = cards[item.sentenceIndex];
-    card.querySelector(".puzzle-text").innerHTML = `<span class="reader-word">${escapeHtml(item.word)}</span>`;
+    const card = cards.find((itemCard) => Number(itemCard.dataset.index) === item.sentenceIndex);
+    if (card) card.querySelector(".puzzle-text").innerHTML = `<span class="reader-word">${escapeHtml(item.word)}</span>`;
     position += 1;
     state.playTimer = setTimeout(step, delay);
   }
@@ -461,27 +563,29 @@ function playSpeedReader() {
 }
 
 function playMovingWords() {
-  const cards = [...document.querySelectorAll(".puzzle-card")];
+  const cards = getVisibleCards();
+  const visibleIndexes = getVisibleIndexes();
   const chunkSize = Number(state.option || 2);
-  let sentenceIndex = 0;
+  let visiblePosition = 0;
   let chunkIndex = 0;
   state.playing = true;
 
   function step() {
     cards.forEach((card) => card.querySelector(".puzzle-text").innerHTML = "");
-    if (sentenceIndex >= state.sentences.length) {
-      cards.forEach((card, index) => updateCardText(card, index));
+    if (visiblePosition >= visibleIndexes.length) {
+      cards.forEach((card) => updateCardText(card, Number(card.dataset.index)));
       stopPlayback();
       return;
     }
+    const sentenceIndex = visibleIndexes[visiblePosition];
     const words = state.sentences[sentenceIndex].match(/\S+/g) || [];
     const chunk = words.slice(chunkIndex, chunkIndex + chunkSize).join(" ");
-    const card = cards[sentenceIndex];
-    card.querySelector(".puzzle-text").innerHTML = `<span class="number">${sentenceIndex + 1}.</span><span class="moving-chunk">${escapeHtml(chunk)}</span>`;
+    const card = cards.find((itemCard) => Number(itemCard.dataset.index) === sentenceIndex);
+    if (card) card.querySelector(".puzzle-text").innerHTML = `<span class="number">${sentenceIndex + 1}.</span><span class="moving-chunk">${escapeHtml(chunk)}</span>`;
     chunkIndex += chunkSize;
     if (chunkIndex >= words.length) {
       chunkIndex = 0;
-      sentenceIndex += 1;
+      visiblePosition += 1;
     }
     state.playTimer = setTimeout(step, 1150);
   }
@@ -489,19 +593,19 @@ function playMovingWords() {
 }
 
 function playDelayedTranslation() {
-  const cards = [...document.querySelectorAll(".puzzle-card")];
-  const delay = Number(state.option || 5) * 1000;
-  cards.forEach((card, index) => {
+  const cards = getVisibleCards();
+  cards.forEach((card) => {
+    const sentenceIndex = Number(card.dataset.index);
     card.classList.remove("revealed");
-    card.dataset.puzzle = state.sentences[index];
-    updateCardText(card, index);
+    card.dataset.puzzle = state.sentences[sentenceIndex];
+    updateCardText(card, sentenceIndex);
   });
-  state.playTimer = setTimeout(() => {
-    cards.forEach((card, index) => {
-      card.querySelector(".puzzle-text").innerHTML = `<span class="number">${index + 1}.</span>_____`;
+  runCountdown(Number(state.timeOption || 5), () => {
+    cards.forEach((card) => {
+      const sentenceIndex = Number(card.dataset.index);
+      card.querySelector(".puzzle-text").innerHTML = `<span class="number">${sentenceIndex + 1}.</span>_____`;
     });
-    stopPlayback();
-  }, delay);
+  });
 }
 
 function escapeHtml(text) {
@@ -518,6 +622,12 @@ function goBack() {
   activityPage.classList.add("hidden");
   landingPage.classList.remove("hidden");
   window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function applyTheme(themeName) {
+  document.body.classList.remove("theme-ocean", "theme-sky", "theme-berry", "theme-forest", "theme-sunset");
+  document.body.classList.add(`theme-${themeName}`);
+  localStorage.setItem("sentenceActivityTheme", themeName);
 }
 
 buildActivityControls();
@@ -547,6 +657,29 @@ activityOptionSelect.addEventListener("change", (event) => {
   renderActivity();
 });
 
+timeOptionSelect.addEventListener("change", (event) => {
+  state.timeOption = event.target.value;
+  renderActivity();
+});
+
+viewModeSelect.addEventListener("change", (event) => {
+  state.viewMode = event.target.value;
+  state.allRevealed = false;
+  renderActivity();
+});
+
+prevSentenceButton.addEventListener("click", () => {
+  state.currentIndex = Math.max(0, state.currentIndex - 1);
+  state.allRevealed = false;
+  renderActivity();
+});
+
+nextSentenceButton.addEventListener("click", () => {
+  state.currentIndex = Math.min(state.sentences.length - 1, state.currentIndex + 1);
+  state.allRevealed = false;
+  renderActivity();
+});
+
 startButton.addEventListener("click", startPlayback);
 showAllButton.addEventListener("click", () => setAllCardsRevealed(!state.allRevealed));
 showEnglishButton.addEventListener("click", toggleEnglish);
@@ -556,9 +689,13 @@ textSizeSelect.addEventListener("change", (event) => {
   document.body.classList.remove("text-size-s", "text-size-m", "text-size-l", "text-size-xl");
   document.body.classList.add(`text-size-${state.textSize}`);
 });
+themeSelect.addEventListener("change", (event) => applyTheme(event.target.value));
 document.querySelector("#backButton").addEventListener("click", goBack);
 document.querySelector("#backTopButton").addEventListener("click", goBack);
 
 targetInput.value = exampleTarget;
 englishInput.value = exampleEnglish;
 document.body.classList.add("text-size-l");
+const savedTheme = localStorage.getItem("sentenceActivityTheme") || "ocean";
+themeSelect.value = savedTheme;
+applyTheme(savedTheme);

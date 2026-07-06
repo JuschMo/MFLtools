@@ -8,6 +8,16 @@
 </head>
 <body>
   <div class="page-shell">
+    <div class="theme-bar">
+      <label for="themeSelect">Theme</label>
+      <select id="themeSelect" class="theme-select" aria-label="Choose colour theme">
+        <option value="ocean" selected>Ocean</option>
+        <option value="sky">Sky</option>
+        <option value="berry">Berry</option>
+        <option value="forest">Forest</option>
+        <option value="sunset">Sunset</option>
+      </select>
+    </div>
     <main>
       <section id="landingPage" class="landing-grid" aria-label="Landing page">
         <div class="card input-card">
@@ -59,8 +69,16 @@
             <option value="l" selected>L</option>
             <option value="xl">XL</option>
           </select>
+          <select id="viewModeSelect" class="control-button option-select" aria-label="Show one sentence or all sentences">
+            <option value="all" selected>All sentences</option>
+            <option value="one">One sentence</option>
+          </select>
+          <button id="prevSentenceButton" class="control-button hidden-control" type="button">←</button>
+          <button id="nextSentenceButton" class="control-button hidden-control" type="button">→</button>
           <select id="activityOptionSelect" class="control-button option-select hidden-control" aria-label="Activity option"></select>
+          <select id="timeOptionSelect" class="control-button option-select hidden-control" aria-label="Timer length"></select>
           <button id="startButton" class="control-button hidden-control" type="button">Start</button>
+          <div id="timerDisplay" class="timer-display hidden-control" aria-live="polite"></div>
           <button id="showAllButton" class="control-button" type="button">Show All Answers</button>
           <button id="showEnglishButton" class="control-button" type="button">Show English</button>
           <button id="copyButton" class="control-button" type="button">Copy</button>
