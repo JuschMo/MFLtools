@@ -8,14 +8,6 @@
 </head>
 <body>
   <div class="page-shell">
-    <header class="site-header">
-      <div>
-        <p class="eyebrow">Language classroom tool</p>
-        <h1>Sentence Activity Generator</h1>
-      </div>
-      <p class="header-note">Enter target-language sentences, add optional English support, then choose an activity.</p>
-    </header>
-
     <main>
       <section id="landingPage" class="landing-grid" aria-label="Landing page">
         <div class="card input-card">
@@ -38,16 +30,7 @@
 
         <aside class="card activity-card">
           <p class="eyebrow">Activities</p>
-          <div class="activity-buttons">
-            <button class="activity-button" data-activity="jumble" type="button">
-              <span>Jumble Words</span>
-              <small>sentence structure</small>
-            </button>
-            <button class="activity-button" data-activity="initials" type="button">
-              <span>Initial Letters</span>
-              <small>first-letter support</small>
-            </button>
-          </div>
+          <div class="activity-buttons" id="activityButtons"></div>
           <div class="activity-help" id="activityHelp">
             Hover over an activity for more information.
           </div>
@@ -57,26 +40,27 @@
       <section id="activityPage" class="activity-page hidden" aria-label="Activity page">
         <div class="activity-topbar">
           <button id="backTopButton" class="ghost-button" type="button">← Back</button>
-          <select id="activitySwitcher" class="activity-switcher" aria-label="Choose activity">
-            <option value="jumble">Jumble Words</option>
-            <option value="initials">Initial Letters</option>
-          </select>
+          <select id="activitySwitcher" class="activity-switcher" aria-label="Choose activity"></select>
         </div>
 
         <div class="activity-heading">
-          <p id="activityCategory" class="eyebrow">Sentence structure awareness</p>
           <h2 id="activityTitle">Jumble Words</h2>
-          <p id="activitySummary" class="activity-summary"></p>
           <p id="studentInstruction" class="student-instruction"></p>
         </div>
 
         <div class="puzzle-panel">
-          <p class="eyebrow centre">Puzzles – click each sentence for the answer</p>
           <div id="puzzleList" class="puzzle-list"></div>
         </div>
 
         <div class="control-bar">
-          <button id="xlButton" class="control-button small-control" type="button">XL</button>
+          <select id="textSizeSelect" class="control-button size-select" aria-label="Choose text size">
+            <option value="s">S</option>
+            <option value="m">M</option>
+            <option value="l" selected>L</option>
+            <option value="xl">XL</option>
+          </select>
+          <select id="activityOptionSelect" class="control-button option-select hidden-control" aria-label="Activity option"></select>
+          <button id="startButton" class="control-button hidden-control" type="button">Start</button>
           <button id="showAllButton" class="control-button" type="button">Show All Answers</button>
           <button id="showEnglishButton" class="control-button" type="button">Show English</button>
           <button id="copyButton" class="control-button" type="button">Copy</button>

@@ -1,21 +1,20 @@
 # Sentence Activity Generator
 
-A simple GitHub Pages classroom tool for turning target-language sentences into two activities:
+A simple static classroom tool for creating sentence-based activities.
 
-- Jumble Words and others
-- Initial Letters
+## Files
 
-Each sentence can be clicked separately to reveal its answer. English translations can also be shown as optional support, without being jumbled or gapped.
+- `index.html`
+- `style.css`
+- `script.js`
+- `README.md`
 
-## How to publish on GitHub Pages
+## Deploy on GitHub Pages
 
-1. Create a new GitHub repository.
-2. Upload `index.html`, `style.css`, and `script.js` into the root of the repository.
+1. Create a public GitHub repository.
+2. Upload these files into the root of the repository.
 3. Go to **Settings** → **Pages**.
-4. Under **Build and deployment**, choose **Deploy from a branch**.
-5. Choose the `main` branch and `/root`, then save.
-6. After a minute or two, GitHub will show the live website link.
-
-## Editing the colours
-
-The colour scheme is set at the top of `style.css` in the `:root` section. Change the blue values there if you want a different shade later.
+4. Choose **Deploy from a branch**.
+5. Choose **main** and **/ root**.
+6. Click **Save**.
+7. Wait for GitHub Pages to publish the site.
