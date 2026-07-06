@@ -1,3 +1,4 @@
+/* v4 verified: timers, one/all sentence mode, colour themes */
 const activityDetails = {
   show: {
     title: "Show Sentences",

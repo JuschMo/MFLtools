@@ -1,3 +1,5 @@
+Version 4 - includes timers, one/all sentence mode, and 5 colour themes.
+
 # Sentence Activity Generator
 
 A simple static classroom tool for creating sentence-based activities.
