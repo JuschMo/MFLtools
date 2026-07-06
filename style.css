@@ -31,9 +31,20 @@ body {
 button,
 textarea,
 select {
-  font: inherit;
+  background: #ffffff;
+  color: #1f2a44;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  padding: 0.65rem 0.8rem;
+  font-size: 1rem;
+  font-family: inherit;
+  cursor: pointer;
 }
 
+select option {
+  background: #ffffff;
+  color: #1f2a44;
+}
 button {
   cursor: pointer;
 }
