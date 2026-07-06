@@ -2,7 +2,7 @@
 
 A simple GitHub Pages classroom tool for turning target-language sentences into two activities:
 
-- Jumble Words
+- Jumble Words and others
 - Initial Letters
 
 Each sentence can be clicked separately to reveal its answer. English translations can also be shown as optional support, without being jumbled or gapped.
